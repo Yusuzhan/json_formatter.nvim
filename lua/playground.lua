@@ -26,8 +26,20 @@ local function insert_line(line, indent)
   print(line)
 end
 
-function M.fmt()
-  -- print(get_visual_selection())
+-- linebreak: true
+-- foo: {
+--   "foo": "bar"
+-- }
+
+-- linebreak: false
+-- [
+--   {
+--      "foo": "bar"
+--   }
+-- ]
+
+
+local function handle_keymap(input, indent, linebreak)
   local index = 0
   local indent = 0
   local in_word = false
@@ -49,4 +61,17 @@ function M.fmt()
   end
 end
 
+local function handle_array(input)
+end
+
+local function handle_element(input)
+end
+
+function M.fmt()
+  if (string.sub(raw, 1, 1) == '{') then
+    handle_keymap(raw, 0, false)
+  end
+end
+
+M.fmt()
 return M
