@@ -226,6 +226,9 @@ function handle_element(tokens, indent, start_index)
 end
 
 function M.fmt()
+  print('START')
+  print(get_visual_selection())
+  print('END')
   local tokens = tokenize(raw)
   for index, value in ipairs(tokens) do
     -- logv(index .. ': ' .. value)
