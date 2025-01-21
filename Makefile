@@ -1,2 +1,2 @@
 run:
-	lua lua/playground.lua
+	lua playground.lua
