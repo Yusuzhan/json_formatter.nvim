@@ -48,7 +48,10 @@ function M.tokenize(input)
 	local check_real_colon = false
 	local last_char = ''
 	for c in string.gmatch(input, ".") do
-		-- print('c: ' .. c .. ', last: ' .. last_char)
+		if c == '\n' then
+			c = ''
+		end
+		print('c: ' .. c .. ', last: ' .. last_char)
 		if check_real_colon and c == ' ' then
 			table.insert(tokens, '"' .. word .. '"')
 			check_real_colon = false
