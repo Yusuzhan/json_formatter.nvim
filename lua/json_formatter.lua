@@ -1,6 +1,7 @@
 local M = {}
 
-local handle_array, handle_keymap, handle_element
+local handle_array, handle_keymap, handle_element, lines
+lines = {}
 
 local function subtable(tab, index)
 	local sub = {}
@@ -14,10 +15,7 @@ end
 
 local function logv(msg)
 	--print('\x1b[0;36;40m' .. msg .. '\x1b[0m')
-end
-
-local function logi(msg)
-	-- print(msg)
+	print(msg)
 end
 
 local function get_visual_selection()
@@ -40,7 +38,8 @@ local function insert_line(line, indent)
 			line = '  ' .. line
 		end
 	end
-	print(line)
+	table.insert(lines, line)
+	--print(line)
 end
 
 function M.tokenize(input)
@@ -58,6 +57,7 @@ function M.tokenize(input)
 		else
 			check_real_colon = false
 		end
+
 		if c == ':' then
 			check_real_colon = true
 		elseif c == ',' and last_char == ':' then
@@ -75,6 +75,7 @@ function M.tokenize(input)
 		elseif word ~= '' and c ~= ' ' then
 			word = word .. c
 		end
+
 		if (c ~= ' ') then
 			last_char = c
 		end
@@ -186,12 +187,26 @@ function M.testFormat(tokens)
 	handle_keymap(tokens, 0, false, 1)
 end
 
+local function insert_text_at_cursor(lines)
+	local s_end = vim.fn.getpos("'>")
+	-- 在光标位置插入文本
+	-- print('s_end[2]: ' .. s_end[2])
+	for i, value in ipairs(lines) do
+		if string.find(value, "\n") then
+			print("ysz found \\n" .. value)
+		end
+	end
+
+	vim.api.nvim_buf_set_lines(0, s_end[2] + 1, s_end[2] + #lines, false, lines)
+end
+
 function M.fmt()
 	local tokens = M.tokenize(get_visual_selection())
 	for index, value in ipairs(tokens) do
 		logv(index .. ': ' .. value)
 	end
 	handle_keymap(tokens, 0, false, 1)
+	insert_text_at_cursor(lines)
 end
 
 return M
